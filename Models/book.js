@@ -15,9 +15,14 @@ const book_schema = new mongoose.Schema({
         required:true
     },
     publisher: String,
-    pages: String,
+    pages: Number,
     image_url: String,
-    buy_url: String,
+    price: { 
+        type: Number,
+        required:true
+    },
+    publisher_name: String,
+    publisher_year: Number,
     create_date: {
         type: Date,
         default: Date.now
@@ -31,9 +36,6 @@ module.exports.getBooks = function(limit) {
     return Books.find().limit(limit).exec();
 };
 
-module.exports.getBookById = function(id) {
-    return Books.findById(id).exec();
-};
 
 module.exports.addBook = function(bookbody) {
     return Books.create(bookbody);

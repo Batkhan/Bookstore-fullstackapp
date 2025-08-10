@@ -41,10 +41,10 @@ module.exports.userRegister = function(registerBody) {
   const newUser = new login(registerBody);
   return newUser.save();
 }
-module.exports.userLogin = async function(email,password,username) {
+module.exports.userLogin = async function(identifier) {
   const [userbyEmail, userbyusername] = await Promise.all([
-    login.findOne({email}).exec(),
-    login.findOne({username}).exec(),
+    login.findOne({email: identifier}).exec(),
+    login.findOne({username: identifier}).exec(),
   ]); 
   return { userbyEmail,userbyusername };
 }

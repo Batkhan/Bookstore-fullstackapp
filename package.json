@@ -1,0 +1,20 @@
+{
+  "name": "bookstore",
+  "version": "1.0.0",
+  "description": "Simple bookstore app",
+  "license": "ISC",
+  "author": "Hamdan Ibrahimkutty",
+  "type": "commonjs",
+  "main": "app.js",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "body-parser": "*",
+    "dotenv": "^17.2.0",
+    "express": "*",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

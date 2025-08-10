@@ -73,7 +73,7 @@ var genrebody = req.body;
     }
 });
 
-//get all books and filtering
+//get all books and filtering and searching
 app.get('/api/books', async function(req,res){
     try{
         const {author,genre,title,sort,order='asc',page = 1,limit = 10} = req.query;
@@ -82,24 +82,16 @@ app.get('/api/books', async function(req,res){
             query.author = new RegExp(`^${author}$`, 'i');
         }
         if (genre) query.genre = new RegExp(`^${genre}$`, 'i');
-        if (title) query.title = new RegExp(`^${title}$`, 'i');
+        if (title && title.trim() !== '') {
+        const cleanTitle = title.replace(/\s+/g, '.*');
+        query.title = { $regex: cleanTitle, $options: 'i' };
+        }
         const sortBy = {};
         if(sort) {
             sortBy[sort] = order === 'desc' ? -1:1;
         }
         let run = await Books.sortAuthor(query,sortBy,page,limit);
         res.json(run);
-    }
-    catch(err) {
-        res.status(500).send(err.message);
-    }
-});
-
-//get specific book by id
-app.get('/api/books/:id',async function(req,res){
-    try{
-        const book = await Books.getBookById(req.params.id);
-        res.json(book);
     }
     catch(err) {
         res.status(500).send(err.message);
@@ -131,10 +123,11 @@ app.delete('/api/books/:id', authenticateToken, requireRole('admin'), async func
 
 //In login page create a user and if email already exists,send back an error
 app.post('/api/register',async function(req,res) {
-    var registerBody = req.body;
+    const registerBody = req.body;
     //password hashing before going into the database
     var password = req.body.password;
     try{
+        registerBody.role = "user";
         const createLogin = await login.userRegister(registerBody);
         res.json(createLogin);
     }
@@ -148,9 +141,9 @@ app.post('/api/register',async function(req,res) {
 
 //To login as existing user
 app.post('/api/login',async function(req,res) {
-    var {email,password,username} = req.body;
+    var {identifier, password} = req.body;
     try{
-        var {userbyEmail, userbyusername} = await login.userLogin(email, password, username);
+        var {userbyEmail, userbyusername} = await login.userLogin(identifier);
         var existingLogin = userbyEmail || userbyusername
         if(!existingLogin) {
             return res.status(400).json({message:"User not Found"});
@@ -176,5 +169,5 @@ app.post('/api/login',async function(req,res) {
     }
     });
 
-app.listen(3000);
-console.log('Running on Port 3000');
+app.listen(5000);
+console.log('Running on Port 5000');
