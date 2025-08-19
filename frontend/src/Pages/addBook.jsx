@@ -11,6 +11,7 @@ const AddBook = () => {
         publisher: '',
         pages: '',
         image_url: '',
+        price: '',
         publisher_year: '',
     });
     const handlechange = (e) => {
